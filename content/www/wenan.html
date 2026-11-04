@@ -101,13 +101,15 @@ button{border:none;padding:8px 14px;border-radius:6px;cursor:pointer;font-weight
     <button class="g" onclick="gen(5)">生成 5 条</button>
     <button class="o" onclick="gen(10)">生成 10 条</button>
     <button class="p" onclick="copyAll()">复制全部</button>
-    <div id="out" class="out">点击按钮生成...</div>
-    <div style="margin-top:8px;"><div style="margin-bottom:8px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+    <span style="display:inline-flex;gap:8px;align-items:center;margin-left:12px;">
   <select id="save-group" onchange="loadTitles()" style="padding:6px 10px;border-radius:6px;border:1px solid #e5e7eb;font-size:13px;"><option value="">选择组</option></select>
-  <select id="save-title" style="padding:6px 10px;border-radius:6px;border:1px solid #e5e7eb;font-size:13px;"><option value="">选择标题</option></select>
+  <select id="save-title" onchange="loadCopies()" style="padding:6px 10px;border-radius:6px;border:1px solid #e5e7eb;font-size:13px;"><option value="">选择标题</option></select>
+  <select id="save-copy" style="padding:6px 10px;border-radius:6px;border:1px solid #e5e7eb;font-size:13px;"><option value="new">新增文案</option></select>
   <button class="b" onclick="saveToLib()">保存到此</button>
   <span id="save-msg" style="color:#059669;font-size:13px;"></span>
-</div></div>
+</span>
+    <div id="out" class="out">点击按钮生成...</div>
+    <div style="margin-top:8px;"></div>
   </div>
 </div>
 <script>
@@ -163,6 +165,19 @@ function loadTitles(){
   const g=LIB_SAVE.groups.find(x=>x.id==gid);
   sel.innerHTML='<option value="">选择标题</option>'+(g?g.titles.map(t=>'<option value="'+t.id+'">'+t.name+'</option>').join(""):"");
 }
+
+function loadCopies(){
+  const gid=document.getElementById("save-group").value;
+  const tid=document.getElementById("save-title").value;
+  const sel=document.getElementById("save-copy");
+  if(!sel)return;
+  if(!gid||!tid){sel.innerHTML='<option value="new">新增文案</option>';return;}
+  const g=LIB_SAVE.groups.find(x=>x.id==gid);
+  const t=g&&g.titles.find(x=>x.id==tid);
+  let opts='<option value="new">新增文案</option>';
+  if(t&&t.copies)t.copies.forEach(c=>opts+='<option value="'+c.id+'">文案 '+c.id+'</option>');
+  sel.innerHTML=opts;
+}
 async function saveToLib(){
   const text=document.getElementById("out").textContent;
   if(!text||text==="点击按钮生成..."){alert("请先生成");return;}
@@ -174,15 +189,13 @@ async function saveToLib(){
   const parts=text.split(/---\s*第\s*\d+\s*条\s*---/);
   const items=parts.map(s=>s.trim()).filter(s=>s.length>10);
   if(items.length===0){items.push(text.trim());}
-  items.forEach(it=>{
-    const id=t.copies.length?Math.max(...t.copies.map(c=>c.id))+1:1;
-    t.copies.push({id,text:it});
-  });
+  const cid=document.getElementById("save-copy").value;if(cid==="new"){items.forEach(it=>{const id=t.copies.length?Math.max(...t.copies.map(c=>c.id))+1:1;t.copies.push({id,text:it});});}else{const c=t.copies.find(x=>x.id==cid);if(c)c.text=items[0]||text.trim();}
   await fetch("/lib/save",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(LIB_SAVE)});
   document.getElementById("save-msg").textContent="已保存 "+items.length+" 条到 "+g.name+" / "+t.name;
   loadLibForSave();
 }
 
+document.addEventListener("DOMContentLoaded",loadLibForSave);
 </script>
 </body>
 </html>
