@@ -31,7 +31,7 @@ button{border:none;padding:8px 16px;border-radius:4px;cursor:pointer;font-weight
 .copy-card .c-text{color:#94a3b8;font-size:14px;line-height:1.5;margin-bottom:8px;white-space:pre-wrap;}
 .copy-card .c-ops{display:flex;gap:6px;}
 /* 组项 */
-.group-item{padding:8px 10px;margin:2px 0;border-radius:6px;cursor:pointer;color:#e2e8f0;font-size:13px;display:flex;justify-content:space-between;align-items:center;}
+.group-item{padding:10px 12px;margin:3px 0;border-radius:6px;cursor:pointer;color:#e2e8f0;font-size:15px;display:flex;justify-content:space-between;align-items:center;}
 .group-item:hover{background:#334155;}.group-item.on{background:#2563eb;color:#fff;}
 .group-item button{padding:2px 6px;font-size:11px;}
 .title-input{background:#334155;color:#fff;border:1px solid #2563eb;border-radius:4px;padding:4px 8px;width:180px;font-size:13px;}
@@ -101,7 +101,7 @@ function finishEdit(id,inp){
 function renderCopies(){
   const g=LIB.groups.find(x=>x.id===curG);if(!g)return;
   const t=g.titles.find(x=>x.id===curT);if(!t)return;
-  document.getElementById("copy-list").innerHTML=t.copies.map(c=>'<div class="copy-card"><div class="c-title">文案 '+c.id+'</div><div class="c-text">'+c.text.slice(0,300)+(c.text.length>150?'...':'')+'</div><div class="c-ops"><button class="o" onclick="saveHere('+c.id+')">保存到此</button><button class="b" onclick="copyText('+c.id+')">复制</button><button class="g" onclick="editCopy('+c.id+')">修改</button><button class="r" onclick="delCopy('+c.id+')">删除</button></div></div>').join("");
+  document.getElementById("copy-list").innerHTML=t.copies.map(c=>'<div class="copy-card"><div class="c-title">文案 '+c.id+'</div><div class="c-text"><textarea style="width:100%;height:60px;background:#334155;color:#fff;border:1px solid #475569;border-radius:4px;padding:6px;resize:none;" onclick="event.stopPropagation()">'+c.text.replace(/</g,"<")+'</textarea></div><div class="c-ops"><button class="o" onclick="saveHere('+c.id+')">保存到此</button><button class="b" onclick="copyText('+c.id+')">复制</button><button class="g" onclick="editCopy('+c.id+')">修改</button><button class="r" onclick="delCopy('+c.id+')">删除</button></div></div>').join("");
 }
 function addGroup(){const id=LIB.groups.length?Math.max(...LIB.groups.map(g=>g.id))+1:1;LIB.groups.push({id,name:"第"+id+"组",titles:[]});saveLib();renderGroups();}
 function delGroup(id){LIB.groups=LIB.groups.filter(g=>g.id!==id);if(curG===id)curG=null;saveLib();renderGroups();}
@@ -149,7 +149,16 @@ function copyText(id){
   document.body.removeChild(ta);
   alert("已复制");
 }
-function saveHere(id){alert("请从文案生成页生成后保存");}
+function saveHere(id){
+  const g=LIB.groups.find(x=>x.id===curG);if(!g)return;
+  const t=g.titles.find(x=>x.id===curT);if(!t)return;
+  const c=t.copies.find(x=>x.id===id);if(!c)return;
+  const cards=document.querySelectorAll(".copy-card");
+  let target=null;
+  cards.forEach(card=>{const title=card.querySelector(".c-title");if(title&&title.textContent.trim()==="文案 "+id)target=card;});
+  if(target){const ta=target.querySelector("textarea");if(ta)c.text=ta.value;}
+  saveLib();renderCopies();
+}
 loadLib();
 </script>
 </body>
