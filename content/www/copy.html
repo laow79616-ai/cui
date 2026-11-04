@@ -102,7 +102,12 @@ button{border:none;padding:8px 14px;border-radius:6px;cursor:pointer;font-weight
     <button class="o" onclick="gen(10)">生成 10 条</button>
     <button class="p" onclick="copyAll()">复制全部</button>
     <div id="out" class="out">点击按钮生成...</div>
-    <div style="margin-top:8px;"><button class="b" onclick="saveToLib()">保存到文案库</button><span id="save-msg" style="margin-left:8px;color:#059669;"></span></div>
+    <div style="margin-top:8px;"><div style="margin-bottom:8px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+  <select id="save-group" onchange="loadTitles()" style="padding:6px 10px;border-radius:6px;border:1px solid #e5e7eb;font-size:13px;"><option value="">选择组</option></select>
+  <select id="save-title" style="padding:6px 10px;border-radius:6px;border:1px solid #e5e7eb;font-size:13px;"><option value="">选择标题</option></select>
+  <button class="b" onclick="saveToLib()">保存到此</button>
+  <span id="save-msg" style="color:#059669;font-size:13px;"></span>
+</div></div>
   </div>
 </div>
 <script>
@@ -141,6 +146,42 @@ function copyAll(){navigator.clipboard.writeText(document.getElementById("out").
 document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>{document.querySelectorAll(".tab").forEach(x=>x.classList.remove("on"));t.classList.add("on");mode=t.dataset.m;sel={hooks:[],exp:"story",kwhook:[],kwexpand:[],kwtwist:[],kwend:[],scenes:[],people:[]};render();});
 render();
 
+
+
+let LIB_SAVE={groups:[]};
+async function loadLibForSave(){
+  try{const r=await fetch("/lib/library.json?t="+Date.now());LIB_SAVE=await r.json();if(!LIB_SAVE.groups)LIB_SAVE.groups=[];}
+  catch(e){LIB_SAVE={groups:[]};}
+  const sel=document.getElementById("save-group");
+  if(!sel)return;
+  sel.innerHTML='<option value="">选择组</option>'+LIB_SAVE.groups.map(g=>'<option value="'+g.id+'">'+g.name+'</option>').join("");
+}
+function loadTitles(){
+  const gid=document.getElementById("save-group").value;
+  const sel=document.getElementById("save-title");
+  if(!gid){sel.innerHTML='<option value="">选择标题</option>';return;}
+  const g=LIB_SAVE.groups.find(x=>x.id==gid);
+  sel.innerHTML='<option value="">选择标题</option>'+(g?g.titles.map(t=>'<option value="'+t.id+'">'+t.name+'</option>').join(""):"");
+}
+async function saveToLib(){
+  const text=document.getElementById("out").textContent;
+  if(!text||text==="点击按钮生成..."){alert("请先生成");return;}
+  const gid=document.getElementById("save-group").value;
+  const tid=document.getElementById("save-title").value;
+  if(!gid||!tid){alert("请选择组和标题");return;}
+  const g=LIB_SAVE.groups.find(x=>x.id==gid);
+  const t=g.titles.find(x=>x.id==tid);
+  const parts=text.split(/---\s*第\s*\d+\s*条\s*---/);
+  const items=parts.map(s=>s.trim()).filter(s=>s.length>10);
+  if(items.length===0){items.push(text.trim());}
+  items.forEach(it=>{
+    const id=t.copies.length?Math.max(...t.copies.map(c=>c.id))+1:1;
+    t.copies.push({id,text:it});
+  });
+  await fetch("/lib/save",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(LIB_SAVE)});
+  document.getElementById("save-msg").textContent="已保存 "+items.length+" 条到 "+g.name+" / "+t.name;
+  loadLibForSave();
+}
 
 </script>
 </body>

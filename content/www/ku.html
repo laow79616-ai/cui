@@ -10,12 +10,12 @@ body{margin:0;font-family:sans-serif;background:#f6f7f9;}
 .top a.on{background:#2563eb;color:#fff;}
 .wrap{max-width:1400px;margin:16px auto;padding:0 16px;}
 h1{font-size:20px;margin:0 0 12px;}
-button{border:none;padding:6px 12px;border-radius:4px;cursor:pointer;font-weight:600;font-size:12px;color:#fff;}
+button{border:none;padding:8px 16px;border-radius:4px;cursor:pointer;font-weight:600;font-size:14px;color:#fff;}
 .b{background:#2563eb;}.g{background:#059669;}.o{background:#d97706;}.r{background:#ef4444;}
 .lib-wrap{display:flex;background:#1e293b;border-radius:12px;overflow:hidden;min-height:560px;}
 .lib-col{display:flex;flex-direction:column;border-right:1px solid #334155;}
 .lib-col:last-child{border-right:none;}
-.lib-h{padding:10px 12px;background:#0f172a;color:#94a3b8;font-size:12px;font-weight:600;display:flex;justify-content:space-between;align-items:center;}
+.lib-h{padding:10px 12px;background:#0f172a;color:#94a3b8;font-size:14px;font-weight:600;display:flex;justify-content:space-between;align-items:center;}
 .lib-list{flex:1;overflow:auto;padding:8px;}
 .g1{width:160px;}.g2{width:320px;}.g3{flex:1;}
 /* 标题项 */
@@ -23,12 +23,12 @@ button{border:none;padding:6px 12px;border-radius:4px;cursor:pointer;font-weight
 .title-item:hover{border-color:#475569;}
 .title-item.on{border-color:#2563eb;background:#1e3a5f;}
 .title-item .t-name{color:#fff;font-size:14px;font-weight:600;margin-bottom:4px;}
-.title-item .t-desc{color:#94a3b8;font-size:12px;margin-bottom:8px;}
+.title-item .t-desc{color:#94a3b8;font-size:14px;margin-bottom:8px;}
 .title-item .t-ops{display:flex;gap:6px;justify-content:flex-end;}
 /* 文案项 */
 .copy-card{background:#0f172a;border:1px solid #334155;border-radius:8px;padding:12px;margin:8px;}
 .copy-card .c-title{color:#fff;font-size:13px;font-weight:600;margin-bottom:6px;}
-.copy-card .c-text{color:#94a3b8;font-size:12px;line-height:1.5;margin-bottom:8px;white-space:pre-wrap;}
+.copy-card .c-text{color:#94a3b8;font-size:14px;line-height:1.5;margin-bottom:8px;white-space:pre-wrap;}
 .copy-card .c-ops{display:flex;gap:6px;}
 /* 组项 */
 .group-item{padding:8px 10px;margin:2px 0;border-radius:6px;cursor:pointer;color:#e2e8f0;font-size:13px;display:flex;justify-content:space-between;align-items:center;}
@@ -101,16 +101,54 @@ function finishEdit(id,inp){
 function renderCopies(){
   const g=LIB.groups.find(x=>x.id===curG);if(!g)return;
   const t=g.titles.find(x=>x.id===curT);if(!t)return;
-  document.getElementById("copy-list").innerHTML=t.copies.map(c=>'<div class="copy-card"><div class="c-title">文案 '+c.id+'</div><div class="c-text">'+c.text.slice(0,150)+(c.text.length>150?'...':'')+'</div><div class="c-ops"><button class="o" onclick="saveHere('+c.id+')">保存到此</button><button class="b" onclick="copyText('+c.id+')">复制</button><button class="g" onclick="editCopy('+c.id+')">修改</button><button class="r" onclick="delCopy('+c.id+')">删除</button></div></div>').join("");
+  document.getElementById("copy-list").innerHTML=t.copies.map(c=>'<div class="copy-card"><div class="c-title">文案 '+c.id+'</div><div class="c-text">'+c.text.slice(0,300)+(c.text.length>150?'...':'')+'</div><div class="c-ops"><button class="o" onclick="saveHere('+c.id+')">保存到此</button><button class="b" onclick="copyText('+c.id+')">复制</button><button class="g" onclick="editCopy('+c.id+')">修改</button><button class="r" onclick="delCopy('+c.id+')">删除</button></div></div>').join("");
 }
 function addGroup(){const id=LIB.groups.length?Math.max(...LIB.groups.map(g=>g.id))+1:1;LIB.groups.push({id,name:"第"+id+"组",titles:[]});saveLib();renderGroups();}
 function delGroup(id){LIB.groups=LIB.groups.filter(g=>g.id!==id);if(curG===id)curG=null;saveLib();renderGroups();}
 function addTitle(){if(!curG){alert("先选组");return;}const g=LIB.groups.find(x=>x.id===curG);const id=g.titles.length?Math.max(...g.titles.map(t=>t.id))+1:1;const name=prompt("标题名称","标题"+id);if(!name)return;g.titles.push({id,name,content:name,copies:[]});saveLib();renderTitles();}
 function delTitle(id){const g=LIB.groups.find(x=>x.id===curG);g.titles=g.titles.filter(t=>t.id!==id);if(curT===id)curT=null;saveLib();renderTitles();}
 function addCopy(){if(!curT){alert("先选标题");return;}const g=LIB.groups.find(x=>x.id===curG);const t=g.titles.find(x=>x.id===curT);const id=t.copies.length?Math.max(...t.copies.map(c=>c.id))+1:1;const text=prompt("文案内容","新文案...");if(!text)return;t.copies.push({id,text});saveLib();renderCopies();}
-function editCopy(id){const g=LIB.groups.find(x=>x.id===curG);const t=g.titles.find(x=>x.id===curT);const c=t.copies.find(x=>x.id===id);const n=prompt("修改文案",c.text);if(n){c.text=n;saveLib();renderCopies();}}
+function editCopy(id){
+  const g=LIB.groups.find(x=>x.id===curG);if(!g)return;
+  const t=g.titles.find(x=>x.id===curT);if(!t)return;
+  const c=t.copies.find(x=>x.id===id);if(!c)return;
+  const cards=document.querySelectorAll(".copy-card");
+  let target=null;
+  cards.forEach(card=>{
+    const title=card.querySelector(".c-title");
+    if(title && title.textContent.trim()==="文案 "+id) target=card;
+  });
+  if(!target)return;
+  const textEl=target.querySelector(".c-text");
+  const old=c.text;
+  textEl.innerHTML='<textarea class="title-input" style="width:100%;height:60px;resize:none;" onclick="event.stopPropagation()" onblur="finishCopy('+id+',this)">'+old.replace(/</g,"<").replace(/>/g,">")+'</textarea>';
+  const ta=textEl.querySelector("textarea");
+  ta.focus();
+}
+function finishCopy(id,ta){
+  const g=LIB.groups.find(x=>x.id===curG);
+  const t=g.titles.find(x=>x.id===curT);
+  const c=t.copies.find(x=>x.id===id);
+  const val=ta.value.trim();
+  if(val)c.text=val;
+  saveLib();renderCopies();
+}
 function delCopy(id){const g=LIB.groups.find(x=>x.id===curG);const t=g.titles.find(x=>x.id===curT);t.copies=t.copies.filter(c=>c.id!==id);saveLib();renderCopies();}
-function copyText(id){const g=LIB.groups.find(x=>x.id===curG);const t=g.titles.find(x=>x.id===curT);const c=t.copies.find(x=>x.id===id);navigator.clipboard.writeText(c.text);alert("已复制");}
+function copyText(id){
+  const g=LIB.groups.find(x=>x.id===curG);
+  const t=g.titles.find(x=>x.id===curT);
+  const c=t.copies.find(x=>x.id===id);
+  if(!c)return;
+  const ta=document.createElement("textarea");
+  ta.value=c.text;
+  ta.style.position="fixed";
+  ta.style.left="-9999px";
+  document.body.appendChild(ta);
+  ta.select();
+  document.execCommand("copy");
+  document.body.removeChild(ta);
+  alert("已复制");
+}
 function saveHere(id){alert("请从文案生成页生成后保存");}
 loadLib();
 </script>
