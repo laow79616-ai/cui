@@ -1,0 +1,1 @@
+*/10 * * * * /root/backup-system.sh >> /var/log/backup-system.log 2>&1
