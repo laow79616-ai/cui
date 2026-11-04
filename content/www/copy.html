@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>文案生成 · 云窗账号管理</title>
+<style>
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans SC",sans-serif;background:#f6f7f9;color:#111827;font-size:14px;}
+.top{background:#fff;border-bottom:1px solid #e5e7eb;padding:12px 20px;display:flex;gap:12px;align-items:center;position:sticky;top:0;z-index:10;}
+.top a{text-decoration:none;color:#374151;padding:6px 10px;border-radius:6px;}
+.top a:hover{background:#f3f4f6;} .top a.on{background:#2563eb;color:#fff;}
+.wrap{max-width:1200px;margin:16px auto;padding:0 16px;}
+h1{font-size:20px;margin:0 0 4px;}
+.sub{color:#6b7280;font-size:12px;margin-bottom:12px;}
+.tabs{display:flex;gap:8px;margin-bottom:12px;}
+.tab{padding:6px 14px;border-radius:6px;background:#e5e7eb;cursor:pointer;}
+.tab.on{background:#2563eb;color:#fff;}
+.card{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:14px;margin-bottom:12px;}
+.card h2{margin:0 0 10px;font-size:15px;color:#1e40af;}
+.grid{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;}
+label{display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border-radius:6px;font-size:13px;cursor:pointer;background:#f9fafb;border:1px solid #e5e7eb;}
+label:hover{background:#f3f4f6;} label.on{background:#dbeafe;border-color:#2563eb;}
+.row{display:flex;gap:12px;flex-wrap:wrap;}
+.col{flex:1;min-width:200px;}
+.muted{color:#6b7280;font-size:12px;margin-bottom:4px;}
+.add-row{display:flex;gap:6px;margin-top:6px;}
+.add-row input{border:1px solid #e5e7eb;border-radius:6px;padding:6px 8px;font-size:13px;flex:1;}
+button{border:none;padding:8px 14px;border-radius:6px;cursor:pointer;font-weight:600;font-size:13px;}
+.b{background:#2563eb;color:#fff;} .g{background:#059669;color:#fff;} .o{background:#d97706;color:#fff;} .p{background:#7c3aed;color:#fff;} .r{background:#ef4444;color:#fff;}
+.out{background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;padding:12px;min-height:100px;white-space:pre-wrap;font-size:13px;line-height:1.6;margin-top:10px;}
+.badge{background:#fef3c7;color:#92400e;padding:2px 6px;border-radius:4px;font-size:11px;}
+.del{color:#ef4444;cursor:pointer;margin-left:4px;font-size:12px;}
+/* 文案库 */
+.lib-wrap{display:flex;gap:0;background:#1e293b;border-radius:12px;overflow:hidden;min-height:360px;margin-bottom:16px;}
+.lib-col{display:flex;flex-direction:column;border-right:1px solid #334155;}
+.lib-col:last-child{border-right:none;}
+.lib-h{padding:10px 12px;background:#0f172a;color:#94a3b8;font-size:12px;font-weight:600;display:flex;justify-content:space-between;align-items:center;}
+.lib-list{flex:1;overflow:auto;padding:6px;}
+.lib-item{padding:8px 10px;margin:2px 0;border-radius:6px;cursor:pointer;color:#e2e8f0;font-size:13px;display:flex;justify-content:space-between;align-items:center;}
+.lib-item:hover{background:#334155;} .lib-item.on{background:#2563eb;color:#fff;}
+.lib-item .ops{display:flex;gap:4px;} .lib-item .ops button{padding:2px 6px;font-size:11px;border-radius:4px;}
+.g1{width:160px;} .g2{width:260px;} .g3{flex:1;}
+.copy-card{background:#0f172a;border:1px solid #334155;border-radius:8px;padding:10px;margin:6px;color:#e2e8f0;}
+.copy-card .ops{display:flex;gap:4px;margin-top:6px;} .copy-card .ops button{padding:4px 8px;font-size:11px;}
+</style>
+</head>
+<body>
+<div class="top">
+  <b>云窗账号管理</b>
+  <a href="/tiktok">TikTok</a>
+  <a href="/threads">Threads</a>
+  <a href="/instagram">Instagram</a>
+  <a href="/facebook">Facebook</a>
+  <a href="/g" class="on">文案生成</a>
+  <a href="/ku">文案库</a>
+</div>
+<div class="wrap">
+  
+
+  <h1>脆算法文案生成器 <span class="badge">四段式强制</span></h1>
+  <div class="sub">钩子 → 展开 → 转折 → 收尾互动钩子 · 每区可自行添加</div>
+  <div class="tabs">
+    <div class="tab on" data-m="money">搞钱版</div>
+    <div class="tab" data-m="emotion">情感版</div>
+  </div>
+
+  <div class="card">
+    <h2>1. 钩子模板（可多选）</h2>
+    <div id="hooks" class="grid"></div>
+    <div class="add-row"><input id="new-hook" placeholder="输入新钩子模板"><button class="b" onclick="addItem('hooks')">添加钩子</button></div>
+  </div>
+  <div class="card">
+    <h2>2. 展开类型 + 关键词</h2>
+    <div class="row">
+      <div class="col">
+        <div class="muted">展开类型</div>
+        <label><input type="radio" name="exp" value="story" checked> 故事型</label>
+        <label><input type="radio" name="exp" value="list"> 清单型</label>
+        <label><input type="radio" name="exp" value="dialog"> 对话型</label>
+      </div>
+    </div>
+    <div class="row" style="margin-top:10px;">
+      <div class="col"><div class="muted">钩子用词</div><div id="kw-hook" class="grid"></div><div class="add-row"><input id="new-kwhook" placeholder="输入"><button class="g" onclick="addItem('kwhook')">添加</button></div></div>
+      <div class="col"><div class="muted">展开用词</div><div id="kw-expand" class="grid"></div><div class="add-row"><input id="new-kwexpand" placeholder="输入"><button class="g" onclick="addItem('kwexpand')">添加</button></div></div>
+    </div>
+    <div class="row" style="margin-top:10px;">
+      <div class="col"><div class="muted">转折用词</div><div id="kw-twist" class="grid"></div><div class="add-row"><input id="new-kwtwist" placeholder="输入"><button class="g" onclick="addItem('kwtwist')">添加</button></div></div>
+      <div class="col"><div class="muted">收尾用词</div><div id="kw-end" class="grid"></div><div class="add-row"><input id="new-kwend" placeholder="输入"><button class="g" onclick="addItem('kwend')">添加</button></div></div>
+    </div>
+  </div>
+  <div class="card">
+    <h2>3. 场景 / 人物</h2>
+    <div class="row">
+      <div class="col"><div class="muted">场景</div><div id="scenes" class="grid"></div><div class="add-row"><input id="new-scene" placeholder="输入"><button class="o" onclick="addItem('scenes')">添加</button></div></div>
+      <div class="col"><div class="muted">人物</div><div id="people" class="grid"></div><div class="add-row"><input id="new-people" placeholder="输入"><button class="o" onclick="addItem('people')">添加</button></div></div>
+    </div>
+  </div>
+  <div class="card">
+    <h2>生成结果</h2>
+    <button class="b" onclick="gen(1)">生成 1 条</button>
+    <button class="g" onclick="gen(5)">生成 5 条</button>
+    <button class="o" onclick="gen(10)">生成 10 条</button>
+    <button class="p" onclick="copyAll()">复制全部</button>
+    <div id="out" class="out">点击按钮生成...</div>
+    <div style="margin-top:8px;"><button class="b" onclick="saveToLib()">保存到文案库</button><span id="save-msg" style="margin-left:8px;color:#059669;"></span></div>
+  </div>
+</div>
+<script>
+const INIT={
+money:{
+hooks:["我靠这个方法月入{n}：{t}","{n}个让人后悔没早知道的{t}冷知识","说句实话，{t}真的能赚钱","真心建议：别再{old}了","我发现了{t}的真正玩法","不懂就问：{t}到底怎么变现","一个扎心的事实：{t}","从0到月入{n}的{t}开始","冷启动{n}天涨粉{n}：{t}"],
+kwhook:["副业","私域","流量","成交","客单价","毛利","复购率","闭环","杠杆","月入","冷启动","变现","接单","带货","个人IP","数字产品","技能变现","AI"],
+kwexpand:["测试","裂变","转化","复购","投放","优化","复制","放大","沉淀","倒推","拆解","实操","避坑","复盘","起号","养号","对标"],
+kwtwist:["数据爆了","又来一单","复购了","睡不着","太稳了","继续加","没想到","反转了","亏了","赚回来了","被限流","又起来了"],
+kwend:["你呢？你会先做哪一步？","有人一样吗？我先来…","求骂，哪里不合理？","你会窒息吗？还是会继续加码？","选手如下…","你现在卡在哪一步？","有人做过吗？","求监督"],
+scenes:["早上","晚上","周末","下班后","深夜","沙发","办公室","车里","客厅","厨房","出租屋","咖啡店","凌晨","午休"],
+people:["自己","合伙人","客户","同行","上级","宝妈","上班族","自由职业者","新手","老板","学员","粉丝"]
+},
+emotion:{
+hooks:["一个扎心的事实：{t}","说句实话，{t}","真心建议：{t}","我发现了{t}","不懂就问：{t}","第一次{t}的滋味","我跟{p}的故事","爱上{p}的开始","等{p}消息的时候","为什么你越{t}对方越冷","{t}真的像憋气"],
+kwhook:["眼神","语气","消息","朋友圈","称呼","细节","习惯","借口","已读","秒回","冷淡","心动","暧昧","出轨","复合","分手","前任","现任","渣","委屈"],
+kwexpand:["回头","已读不回","解释","沉默","道歉","冷处理","重新联系","憋气","断联","戒断","讨拍","心软","试探","拉黑","撤回"],
+kwtwist:["心软","失落","委屈","心酸","后悔","释然","窒息","崩溃","突然懂了","原来如此","没想到","反转"],
+kwend:["你呢？你会回头吗？","有人一样吗？我先来…","求骂，我是不是太作了？","你会窒息吗？还是会继续？","选手如下…","你遇到过吗？","有人懂吗？","求拍"],
+scenes:["早上","晚上","周末","深夜","分手后","复合后","沙发","车里","餐厅","酒店","公园","床上","凌晨","下雨天"],
+people:["前任","现任","暧昧对象","同事","朋友","自己","闺蜜","兄弟","渣男","渣女","暗恋对象","相亲对象"]
+}
+};
+const KEY="wenan-lib-v4";
+let mode="money", sel={hooks:[],exp:"story",kwhook:[],kwexpand:[],kwtwist:[],kwend:[],scenes:[],people:[]};
+function loadGen(){try{const c=localStorage.getItem(KEY);if(c)return JSON.parse(c);}catch(e){}return JSON.parse(JSON.stringify(INIT));}
+function saveGen(lib){localStorage.setItem(KEY,JSON.stringify(lib));}
+function pick(a){return a&&a.length?a[Math.floor(Math.random()*a.length)]:"";}
+function renderList(id,arr,key){const el=document.getElementById(id);if(!el)return;el.innerHTML=(arr||[]).map(item=>`<label><input type="checkbox" data-k="${key}" value="${item.replace(/"/g,'"')}"> ${item}<span class="del" onclick="delItem('${key}','${item.replace(/'/g,"")}')">×</span></label>`).join("");}
+function render(){const L=loadGen()[mode];renderList("hooks",L.hooks,"hooks");renderList("kw-hook",L.kwhook,"kwhook");renderList("kw-expand",L.kwexpand,"kwexpand");renderList("kw-twist",L.kwtwist,"kwtwist");renderList("kw-end",L.kwend,"kwend");renderList("scenes",L.scenes,"scenes");renderList("people",L.people,"people");document.querySelectorAll("input[type=checkbox]").forEach(el=>{el.onchange=()=>{const k=el.dataset.k;if(!sel[k])sel[k]=[];if(el.checked)sel[k].push(el.value);else sel[k]=sel[k].filter(v=>v!==el.value);};});document.querySelectorAll("input[type=radio]").forEach(el=>{el.onchange=()=>{sel.exp=el.value;};});}
+function addItem(key){const map={hooks:"new-hook",kwhook:"new-kwhook",kwexpand:"new-kwexpand",kwtwist:"new-kwtwist",kwend:"new-kwend",scenes:"new-scene",people:"new-people"};const input=document.getElementById(map[key]);const val=(input.value||"").trim();if(!val)return;const L=loadGen();if(!L[mode][key])L[mode][key]=[];if(!L[mode][key].includes(val))L[mode][key].push(val);saveGen(L);input.value="";render();}
+function delItem(key,item){const L=loadGen();L[mode][key]=L[mode][key].filter(x=>x!==item);saveGen(L);render();}
+function one(){const L=loadGen()[mode];const hook=pick(sel.hooks.length?sel.hooks:L.hooks);const theme=pick(sel.kwhook.length?sel.kwhook:L.kwhook)||"这个事";const n=[3,5,7,10,15,30][Math.floor(Math.random()*6)];const old=["死工资","硬广","瞎投","手动回复"][Math.floor(Math.random()*4)];const person=pick(sel.people.length?sel.people:L.people);const scene=pick(sel.scenes.length?sel.scenes:L.scenes);const expW=pick(sel.kwexpand.length?sel.kwexpand:L.kwexpand);const twist=pick(sel.kwtwist.length?sel.kwtwist:L.kwtwist);const end=pick(sel.kwend.length?sel.kwend:L.kwend);let h=(hook||"").replace(/\{n\}/g,n).replace(/\{t\}/g,theme).replace(/\{old\}/g,old).replace(/\{p\}/g,person);let body="";if(sel.exp==="story")body=`那天${scene}，我在${expW}的时候突然发现不对劲。一开始很焦虑，后来${twist}。`;else if(sel.exp==="list")body=`总结了${n}点：\n1. 先${expW}\n2. 再观察数据\n3. 确认有效再放大\n4. 别急着all in`;else body=`和${person}的对话：\n「你怎么看？」\n「先${expW}吧。」\n结果${twist}。`;return `${h}\n\n${body}\n\n${end}`;}
+function gen(n){const lines=[];for(let i=0;i<n;i++)lines.push(`--- 第 ${i+1} 条 ---\n${one()}`);document.getElementById("out").textContent=lines.join("\n\n");}
+function copyAll(){navigator.clipboard.writeText(document.getElementById("out").textContent).then(()=>alert("已复制"));}
+document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>{document.querySelectorAll(".tab").forEach(x=>x.classList.remove("on"));t.classList.add("on");mode=t.dataset.m;sel={hooks:[],exp:"story",kwhook:[],kwexpand:[],kwtwist:[],kwend:[],scenes:[],people:[]};render();});
+render();
+
+
+</script>
+</body>
+</html>
