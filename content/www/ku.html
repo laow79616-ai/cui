@@ -8,21 +8,33 @@ body{margin:0;font-family:sans-serif;background:#f6f7f9;}
 .top{background:#fff;border-bottom:1px solid #e5e7eb;padding:12px 20px;display:flex;gap:12px;align-items:center;}
 .top a{text-decoration:none;color:#374151;padding:6px 10px;border-radius:6px;}
 .top a.on{background:#2563eb;color:#fff;}
-.wrap{max-width:1200px;margin:16px auto;padding:0 16px;}
+.wrap{max-width:1400px;margin:16px auto;padding:0 16px;}
 h1{font-size:20px;margin:0 0 12px;}
-button{border:none;padding:8px 14px;border-radius:6px;cursor:pointer;font-weight:600;font-size:13px;color:#fff;}
+button{border:none;padding:6px 12px;border-radius:4px;cursor:pointer;font-weight:600;font-size:12px;color:#fff;}
 .b{background:#2563eb;}.g{background:#059669;}.o{background:#d97706;}.r{background:#ef4444;}
-.lib-wrap{display:flex;background:#1e293b;border-radius:12px;overflow:hidden;min-height:520px;}
+.lib-wrap{display:flex;background:#1e293b;border-radius:12px;overflow:hidden;min-height:560px;}
 .lib-col{display:flex;flex-direction:column;border-right:1px solid #334155;}
 .lib-col:last-child{border-right:none;}
 .lib-h{padding:10px 12px;background:#0f172a;color:#94a3b8;font-size:12px;font-weight:600;display:flex;justify-content:space-between;align-items:center;}
-.lib-list{flex:1;overflow:auto;padding:6px;}
-.lib-item{padding:8px 10px;margin:2px 0;border-radius:6px;cursor:pointer;color:#e2e8f0;font-size:13px;display:flex;justify-content:space-between;align-items:center;}
-.lib-item:hover{background:#334155;}.lib-item.on{background:#2563eb;color:#fff;}
-.lib-item .ops button{padding:2px 6px;font-size:11px;border-radius:4px;}
-.g1{width:180px;}.g2{width:280px;}.g3{flex:1;}
-.copy-card{background:#0f172a;border:1px solid #334155;border-radius:8px;padding:10px;margin:6px;color:#e2e8f0;}
-.copy-card .ops{display:flex;gap:4px;margin-top:6px;}.copy-card .ops button{padding:4px 8px;font-size:11px;}
+.lib-list{flex:1;overflow:auto;padding:8px;}
+.g1{width:160px;}.g2{width:320px;}.g3{flex:1;}
+/* 标题项 */
+.title-item{background:#0f172a;border:1px solid #334155;border-radius:8px;padding:10px;margin:6px 0;cursor:pointer;}
+.title-item:hover{border-color:#475569;}
+.title-item.on{border-color:#2563eb;background:#1e3a5f;}
+.title-item .t-name{color:#fff;font-size:14px;font-weight:600;margin-bottom:4px;}
+.title-item .t-desc{color:#94a3b8;font-size:12px;margin-bottom:8px;}
+.title-item .t-ops{display:flex;gap:6px;justify-content:flex-end;}
+/* 文案项 */
+.copy-card{background:#0f172a;border:1px solid #334155;border-radius:8px;padding:12px;margin:8px;}
+.copy-card .c-title{color:#fff;font-size:13px;font-weight:600;margin-bottom:6px;}
+.copy-card .c-text{color:#94a3b8;font-size:12px;line-height:1.5;margin-bottom:8px;white-space:pre-wrap;}
+.copy-card .c-ops{display:flex;gap:6px;}
+/* 组项 */
+.group-item{padding:8px 10px;margin:2px 0;border-radius:6px;cursor:pointer;color:#e2e8f0;font-size:13px;display:flex;justify-content:space-between;align-items:center;}
+.group-item:hover{background:#334155;}.group-item.on{background:#2563eb;color:#fff;}
+.group-item button{padding:2px 6px;font-size:11px;}
+.title-input{background:#334155;color:#fff;border:1px solid #2563eb;border-radius:4px;padding:4px 8px;width:180px;font-size:13px;}
 </style>
 </head>
 <body>
@@ -56,20 +68,50 @@ button{border:none;padding:8px 14px;border-radius:6px;cursor:pointer;font-weight
 let LIB={groups:[]},curG=null,curT=null;
 async function loadLib(){try{const r=await fetch("/lib/library.json?t="+Date.now());LIB=await r.json();if(!LIB.groups)LIB.groups=[];}catch(e){LIB={groups:[]};}renderGroups();}
 async function saveLib(){await fetch("/lib/save",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(LIB)});}
-function renderGroups(){document.getElementById("g-count").textContent=LIB.groups.length;document.getElementById("group-list").innerHTML=LIB.groups.map(g=>'<div class="lib-item '+(curG===g.id?'on':'')+'" onclick="selGroup('+g.id+')">'+g.name+'<span class="ops"><button class="r" onclick="event.stopPropagation();delGroup('+g.id+')">删</button></span></div>').join("");if(curG)renderTitles();else{document.getElementById("title-list").innerHTML="";document.getElementById("copy-list").innerHTML="";}}
+function renderGroups(){
+  document.getElementById("g-count").textContent=LIB.groups.length;
+  document.getElementById("group-list").innerHTML=LIB.groups.map(g=>'<div class="group-item '+(curG===g.id?'on':'')+'" onclick="selGroup('+g.id+')">'+g.name+'<button class="r" onclick="event.stopPropagation();delGroup('+g.id+')">删</button></div>').join("");
+  if(curG)renderTitles();else{document.getElementById("title-list").innerHTML="";document.getElementById("copy-list").innerHTML="";}
+}
 function selGroup(id){curG=id;curT=null;renderGroups();}
-function renderTitles(){const g=LIB.groups.find(x=>x.id===curG);if(!g)return;document.getElementById("title-list").innerHTML=g.titles.map(t=>'<div class="lib-item '+(curT===t.id?'on':'')+'" onclick="selTitle('+t.id+')"><span>'+t.name+'</span><span class="ops"><button class="b" onclick="event.stopPropagation();editTitle('+t.id+')">改</button><button class="r" onclick="event.stopPropagation();delTitle('+t.id+')">删</button></span></div>').join("");if(curT)renderCopies();else document.getElementById("copy-list").innerHTML="";}
+function renderTitles(){
+  const g=LIB.groups.find(x=>x.id===curG);if(!g)return;
+  document.getElementById("title-list").innerHTML=g.titles.map(t=>'<div class="title-item '+(curT===t.id?'on':'')+'" data-tid="'+t.id+'" onclick="selTitle('+t.id+')"><div class="t-name">'+t.name+'</div><div class="t-desc">'+(t.content||t.name)+'</div><div class="t-ops"><button class="b" onclick="event.stopPropagation();startEdit('+t.id+')">修改</button><button class="r" onclick="event.stopPropagation();delTitle('+t.id+')">删除</button></div></div>').join("");
+  if(curT)renderCopies();else document.getElementById("copy-list").innerHTML="";
+}
 function selTitle(id){curT=id;renderTitles();}
-function renderCopies(){const g=LIB.groups.find(x=>x.id===curG);if(!g)return;const t=g.titles.find(x=>x.id===curT);if(!t)return;document.getElementById("copy-list").innerHTML=t.copies.map(c=>'<div class="copy-card"><div>文案 '+c.id+'</div><div style="font-size:12px;margin:4px 0;white-space:pre-wrap;">'+c.text.slice(0,200)+'</div><div class="ops"><button class="b" onclick="copyText('+c.id+')">复制</button><button class="g" onclick="editCopy('+c.id+')">修改</button><button class="r" onclick="delCopy('+c.id+')">删除</button></div></div>').join("");}
+function startEdit(id){
+  const g=LIB.groups.find(x=>x.id===curG);if(!g)return;
+  const t=g.titles.find(x=>x.id===id);if(!t)return;
+  const row=document.querySelector('[data-tid="'+id+'"]');
+  if(!row)return;
+  const nameEl=row.querySelector(".t-name");
+  const old=nameEl.textContent;
+  nameEl.innerHTML='<input class="title-input" value="'+old.replace(/"/g,"")+'" onclick="event.stopPropagation()" onblur="finishEdit('+id+',this)" onkeydown="if(event.key==\'Enter\')this.blur()">';
+  const inp=nameEl.querySelector("input");
+  inp.focus();inp.select();
+}
+function finishEdit(id,inp){
+  const g=LIB.groups.find(x=>x.id===curG);
+  const t=g.titles.find(x=>x.id===id);
+  const val=inp.value.trim();
+  if(val){t.name=val;t.content=val;}
+  saveLib();renderTitles();
+}
+function renderCopies(){
+  const g=LIB.groups.find(x=>x.id===curG);if(!g)return;
+  const t=g.titles.find(x=>x.id===curT);if(!t)return;
+  document.getElementById("copy-list").innerHTML=t.copies.map(c=>'<div class="copy-card"><div class="c-title">文案 '+c.id+'</div><div class="c-text">'+c.text.slice(0,150)+(c.text.length>150?'...':'')+'</div><div class="c-ops"><button class="o" onclick="saveHere('+c.id+')">保存到此</button><button class="b" onclick="copyText('+c.id+')">复制</button><button class="g" onclick="editCopy('+c.id+')">修改</button><button class="r" onclick="delCopy('+c.id+')">删除</button></div></div>').join("");
+}
 function addGroup(){const id=LIB.groups.length?Math.max(...LIB.groups.map(g=>g.id))+1:1;LIB.groups.push({id,name:"第"+id+"组",titles:[]});saveLib();renderGroups();}
 function delGroup(id){LIB.groups=LIB.groups.filter(g=>g.id!==id);if(curG===id)curG=null;saveLib();renderGroups();}
 function addTitle(){if(!curG){alert("先选组");return;}const g=LIB.groups.find(x=>x.id===curG);const id=g.titles.length?Math.max(...g.titles.map(t=>t.id))+1:1;const name=prompt("标题名称","标题"+id);if(!name)return;g.titles.push({id,name,content:name,copies:[]});saveLib();renderTitles();}
-function editTitle(id){const g=LIB.groups.find(x=>x.id===curG);const t=g.titles.find(x=>x.id===id);const n=prompt("修改标题",t.name);if(n){t.name=n;saveLib();renderTitles();}}
 function delTitle(id){const g=LIB.groups.find(x=>x.id===curG);g.titles=g.titles.filter(t=>t.id!==id);if(curT===id)curT=null;saveLib();renderTitles();}
 function addCopy(){if(!curT){alert("先选标题");return;}const g=LIB.groups.find(x=>x.id===curG);const t=g.titles.find(x=>x.id===curT);const id=t.copies.length?Math.max(...t.copies.map(c=>c.id))+1:1;const text=prompt("文案内容","新文案...");if(!text)return;t.copies.push({id,text});saveLib();renderCopies();}
 function editCopy(id){const g=LIB.groups.find(x=>x.id===curG);const t=g.titles.find(x=>x.id===curT);const c=t.copies.find(x=>x.id===id);const n=prompt("修改文案",c.text);if(n){c.text=n;saveLib();renderCopies();}}
 function delCopy(id){const g=LIB.groups.find(x=>x.id===curG);const t=g.titles.find(x=>x.id===curT);t.copies=t.copies.filter(c=>c.id!==id);saveLib();renderCopies();}
 function copyText(id){const g=LIB.groups.find(x=>x.id===curG);const t=g.titles.find(x=>x.id===curT);const c=t.copies.find(x=>x.id===id);navigator.clipboard.writeText(c.text);alert("已复制");}
+function saveHere(id){alert("请从文案生成页生成后保存");}
 loadLib();
 </script>
 </body>
