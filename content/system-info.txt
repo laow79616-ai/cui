@@ -1,16 +1,17 @@
 === System Info ===
-Wed Nov  4 12:20:01 CST 2026
+Wed Nov  4 12:30:01 CST 2026
 Linux laowang-mdds-01.evoxt.com 7.0.0-14-generic #14-Ubuntu SMP PREEMPT_DYNAMIC Mon Apr 13 11:09:53 UTC 2026 x86_64 GNU/Linux
 Filesystem      Size  Used Avail Use% Mounted on
-tmpfs           782M  632K  782M   1% /run
+tmpfs           782M  652K  781M   1% /run
 /dev/vda2        30G  4.9G   23G  18% /
 tmpfs           2.0G     0  2.0G   0% /dev/shm
 none            1.0M     0  1.0M   0% /run/credentials/systemd-journald.service
 tmpfs           2.0G   40M  1.9G   2% /tmp
 none            1.0M     0  1.0M   0% /run/credentials/systemd-networkd.service
 none            1.0M     0  1.0M   0% /run/credentials/getty@tty1.service
+tmpfs           391M  8.0K  391M   1% /run/user/0
                total        used        free      shared  buff/cache   available
-Mem:           3.8Gi       622Mi       586Mi        40Mi       2.9Gi       3.2Gi
+Mem:           3.8Gi       656Mi       505Mi        40Mi       3.0Gi       3.2Gi
 Swap:             0B          0B          0B
 
 === Installed packages ===
@@ -229,19 +230,21 @@ ii  libintl-xs-perl                         1.37-1                           amd
   systemd-logind.service   loaded active running User Login Management
   systemd-networkd.service loaded active running Network Management
   systemd-udevd.service    loaded active running Rule-based Manager for Device Events and Files
+  user@0.service           loaded active running User Manager for UID 0
 
 Legend: LOAD   → Reflects whether the unit definition was properly loaded.
         ACTIVE → The high-level unit activation state, i.e. generalization of SUB.
         SUB    → The low-level unit activation state, values depend on unit type.
 
-12 loaded units listed.
+13 loaded units listed.
 
 === Listening ports ===
 Netid State  Recv-Q Send-Q Local Address:Port Peer Address:PortProcess                                                                                                                                          
 udp   UNCONN 0      0          127.0.0.1:323       0.0.0.0:*    users:(("chronyd",pid=1138,fd=4))                                                                                                               
 udp   UNCONN 0      0              [::1]:323          [::]:*    users:(("chronyd",pid=1138,fd=5))                                                                                                               
+tcp   LISTEN 0      5          127.0.0.1:8088      0.0.0.0:*    users:(("python3",pid=1994347,fd=3))                                                                                                            
 tcp   LISTEN 0      4096         0.0.0.0:22        0.0.0.0:*    users:(("sshd",pid=1246,fd=3),("systemd",pid=1,fd=192))                                                                                         
-tcp   LISTEN 0      511          0.0.0.0:80        0.0.0.0:*    users:(("nginx",pid=1993542,fd=10),("nginx",pid=1993541,fd=10),("nginx",pid=1993540,fd=10),("nginx",pid=1993538,fd=10),("nginx",pid=1247,fd=10))
+tcp   LISTEN 0      511          0.0.0.0:80        0.0.0.0:*    users:(("nginx",pid=1994424,fd=10),("nginx",pid=1994423,fd=10),("nginx",pid=1994422,fd=10),("nginx",pid=1994420,fd=10),("nginx",pid=1247,fd=10))
 tcp   LISTEN 0      511        127.0.0.1:3000      0.0.0.0:*    users:(("node",pid=1980789,fd=21))                                                                                                              
 tcp   LISTEN 0      4096            [::]:22           [::]:*    users:(("sshd",pid=1246,fd=4),("systemd",pid=1,fd=193))                                                                                         
-tcp   LISTEN 0      511             [::]:80           [::]:*    users:(("nginx",pid=1993542,fd=11),("nginx",pid=1993541,fd=11),("nginx",pid=1993540,fd=11),("nginx",pid=1993538,fd=11),("nginx",pid=1247,fd=11))
+tcp   LISTEN 0      511             [::]:80           [::]:*    users:(("nginx",pid=1994424,fd=11),("nginx",pid=1994423,fd=11),("nginx",pid=1994422,fd=11),("nginx",pid=1994420,fd=11),("nginx",pid=1247,fd=11))
