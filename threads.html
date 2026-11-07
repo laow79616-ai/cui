@@ -240,7 +240,7 @@ function openWin(id){
   if(!a||!a.proxy){alert("请先分配代理");return;}
   const parts=a.proxy.split(":");
   const host=parts[0], port=parts[1]||"80", user=parts[2]||"", pass=parts[3]||"";
-  const data=JSON.stringify({h:host,p:parseInt(port),u:user,w:pass,s:"http",id:"threads_"+curWin+"_"+id,url:"https://www.threads.net"});
+  const data=JSON.stringify({h:host,p:parseInt(port),u:user,w:pass,s:"http",g:"th",id:"threads-"+curWin+"-"+id,url:"https://www.threads.net"});
   const b64=btoa(data).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/g,"");
   a.status="online";
   save();render();
