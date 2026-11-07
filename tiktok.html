@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>TikTok 登入 · 云窗账号管理</title>
+<style>
+*{box-sizing:border-box;}
+body{margin:0;font-family:system-ui,sans-serif;background:#f0f2f5;color:#1f2937;}
+.top{background:#fff;border-bottom:1px solid #e5e7eb;padding:10px 20px;display:flex;gap:16px;align-items:center;}
+.logo{display:flex;align-items:center;gap:8px;font-weight:700;}
+.logo-icon{width:32px;height:32px;background:linear-gradient(135deg,#3b82f6,#8b5cf6);border-radius:8px;}
+.top a,.top button{text-decoration:none;color:#374151;padding:8px 14px;border-radius:20px;font-size:14px;border:none;background:transparent;cursor:pointer;}
+.top .on{background:#2563eb;color:#fff;}
+.top .btn{background:#f3f4f6;}
+.top .btn-primary{background:#2563eb;color:#fff;}
+.wrap{max-width:1200px;margin:16px auto;padding:0 16px;}
+.report{background:#fff;border:1px solid #e5e7eb;border-radius:16px;padding:16px;margin-bottom:16px;}
+.report h3{margin:0 0 8px;font-size:14px;color:#6b7280;}
+.report .sealed{color:#059669;font-size:13px;line-height:1.6;}
+.windows{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px;}
+.win-card{background:#fff;border:1px solid #e5e7eb;border-radius:16px;padding:16px;cursor:pointer;}
+.win-card.on{background:#2563eb;color:#fff;border-color:#2563eb;}
+.win-card h4{margin:0 0 4px;font-size:16px;}
+.win-card p{margin:0;font-size:13px;opacity:.8;}
+.win-card .count{font-size:12px;margin-top:8px;opacity:.7;}
+.main{display:flex;gap:16px;}
+.sidebar{width:180px;background:#fff;border:1px solid #e5e7eb;border-radius:16px;padding:8px;max-height:500px;overflow:auto;}
+.sidebar-h{font-size:12px;color:#6b7280;padding:8px;}
+.group-item{padding:10px 12px;margin:2px 0;border-radius:10px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-size:14px;}
+.group-item:hover{background:#f3f4f6;}
+.group-item.on{background:#2563eb;color:#fff;}
+.group-item .range{font-size:11px;opacity:.7;}
+.content{flex:1;}
+.content-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+.seats{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;}
+.seat{width:36px;height:36px;border-radius:50%;border:2px solid #e5e7eb;display:flex;align-items:center;justify-content:center;font-size:13px;cursor:pointer;background:#fff;}
+.seat.on{background:#2563eb;color:#fff;border-color:#2563eb;}
+.seat.has{border-color:#2563eb;}
+.search-bar{display:flex;gap:8px;margin-bottom:12px;}
+.search-bar input{flex:1;padding:10px 14px;border:1px solid #e5e7eb;border-radius:20px;font-size:14px;}
+.filter-btn{padding:8px 16px;border:1px solid #e5e7eb;border-radius:20px;background:#fff;cursor:pointer;font-size:13px;}
+.filter-btn.on{background:#2563eb;color:#fff;border-color:#2563eb;}
+.accounts{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;}
+.acc{background:#fff;border:1px solid #e5e7eb;border-radius:16px;padding:16px;}
+.acc-h{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.acc-num{width:32px;height:32px;border-radius:50%;background:#2563eb;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;}
+.acc-info{flex:1;}
+.acc-info h4{margin:0;font-size:14px;}
+.acc-info p{margin:2px 0 0;font-size:12px;color:#6b7280;}
+.acc-status{font-size:12px;color:#6b7280;}.acc-status.online{color:#059669;font-weight:600;}
+.acc-proxy{background:#f9fafb;border-radius:8px;padding:8px;margin:8px 0;font-size:12px;}
+.acc-proxy div{display:flex;justify-content:space-between;margin:2px 0;}
+.upload-modal{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:100;}
+.upload-modal.show{display:flex;}
+.upload-box{background:#fff;border-radius:16px;padding:20px;width:400px;}
+.upload-box textarea{width:100%;height:120px;border:1px solid #e5e7eb;border-radius:8px;padding:10px;font-size:13px;margin:10px 0;}
+button{border:none;padding:8px 16px;border-radius:8px;cursor:pointer;font-weight:600;font-size:13px;}
+.b{background:#2563eb;color:#fff;}
+</style>
+</head>
+<body>
+<div class="top">
+  <div class="logo"><div class="logo-icon"></div>云窗账号管理</div>
+  <a href="/tiktok" class="on">TikTok</a>
+  <a href="/threads" class="TikTok_CLASS_THREADS">Threads</a>
+  <a href="/instagram" class="TikTok_CLASS_IG">Instagram</a>
+  <a href="/facebook" class="TikTok_CLASS_FB">Facebook</a>
+  <a href="/g">文案生成</a>
+  <a href="/ku">文案库</a>
+  <button class="btn" onclick="showUpload()">批量添加 IP</button><button class="btn" onclick="clearAll()" style="background:#ef4444;color:#fff;margin-left:8px;">清空所有 IP</button><button class="btn" onclick="downloadInstaller()" style="background:#10b981;color:#fff;margin-left:8px;">下载打开器</button>
+  <button class="btn-primary">+ 新建窗口</button>
+</div>
+<div class="wrap">
+  <div class="report">
+    <h3>查询上报</h3>
+    <div class="sealed" id="sealed-list">未封号：加载中...</div><div class="install-box" style="background:#fff;border-radius:12px;padding:16px;margin-bottom:16px;box-shadow:0 1px 3px rgba(0,0,0,.08);">
+  <p style="color:#6b7280;font-size:13px;margin:0 0 12px;">每扇窗口是独立页面，只登入一个账号，并独占一条代理。扫码和邮箱都不能换成别的号。</p>
+  <div style="background:#f9fafb;border-radius:8px;padding:12px;">
+    <p style="font-weight:600;margin:0 0 8px;">先装一次，打开才会进 tiktok.com</p>
+    <ol style="margin:0;padding-left:20px;font-size:13px;color:#374151;line-height:1.8;">
+      <li>点下面按钮，下载压缩包。</li>
+      <li>解压。</li>
+      <li>双击「安装.bat」。</li>
+      <li>回到这里，再点窗口上的「打开窗口」。</li>
+    </ol>
+    <p style="margin:12px 0 8px;font-size:13px;">下载地址：<a href="/opener.zip" style="color:#2563eb;">https://liangzi.icu/opener.zip</a></p><button class="b" onclick="downloadInstaller()" style="margin-top:4px;">下载安装包</button>
+  </div>
+</div>
+    <div style="color:#9ca3af;font-size:12px;margin-top:4px;">已登出 0，查询到会显示在这里</div>
+  </div>
+  <div class="windows" id="win-cards"></div>
+  <div class="main">
+    <div class="sidebar">
+      <div class="sidebar-h">新空号 1-200</div>
+      <div id="group-list"></div>
+    </div>
+    <div class="content">
+      <div class="content-h">
+        <span id="group-title">第1组 · 10 个号</span>
+        <span style="font-size:12px;color:#6b7280;">删号留空，不往前移</span>
+      </div>
+      <div class="seats" id="seats"></div>
+      <div class="search-bar">
+        <input placeholder="搜索窗口、邮箱或代理" id="search">
+        <button class="filter-btn on" onclick="setFilter('all')">全部</button>
+        <button class="filter-btn" onclick="setFilter('online')">已登入</button>
+        <button class="filter-btn" onclick="setFilter('offline')">未登入</button>
+      </div>
+      <div class="accounts" id="acc-list"></div>
+    </div>
+  </div>
+</div>
+<div class="upload-modal" id="upload-modal">
+  <div class="upload-box">
+    <h3 style="margin:0;">批量添加 IP</h3>
+    <p style="font-size:12px;color:#6b7280;">格式：host:port:user:pass，一行一个</p>
+    <textarea id="ip-input" placeholder="63.164.220.154:35339:user:pass"></textarea>
+    <div style="display:flex;gap:8px;justify-content:flex-end;">
+      <button onclick="hideUpload()">取消</button>
+      <button class="b" onclick="uploadIP()">上传并分配</button>
+    </div>
+  </div>
+</div>
+<script>
+const PLATFORM = "tiktok";
+const WINDOWS=3, GROUPS=20, PER_GROUP=10;
+let DATA={windows:[]}, curWin=0, curGroup=0, filter='all';
+function init(){
+  for(let w=0;w<WINDOWS;w++){
+    DATA.windows.push({id:w,name:(w+1)+"窗口",desc:w===0?"管理原来的号 1-200":"管理新空号 1-200",groups:[]});
+    for(let g=0;g<GROUPS;g++){
+      DATA.windows[w].groups.push({id:g,accounts:[]});
+      for(let a=0;a<PER_GROUP;a++){
+        DATA.windows[w].groups[g].accounts.push({id:g*PER_GROUP+a+1,email:"",proxy:"",status:"empty",auth:""});
+      }
+    }
+  }
+  load().then(render);
+}
+async function load(){
+  let local=null;
+  try{local=JSON.parse(localStorage.getItem("win-data-shared"));}catch(e){}
+  try{
+    const r=await fetch("/data-api/");
+    const d=await r.json();
+    if(d.windows&&d.windows[0]&&d.windows[0].groups){
+      DATA=d;
+    }else if(local&&local.windows){
+      DATA=local;
+      fetch("/data-api/",{method:"POST",body:JSON.stringify(DATA)}).catch(()=>{});
+    }
+  }catch(e){
+    if(local&&local.windows)DATA=local;
+  }
+  if(DATA.windows)DATA.windows.forEach(w=>w.groups.forEach(g=>g.accounts.forEach(a=>a.status="offline")));
+}
+function save(){
+  localStorage.setItem("win-data-shared",JSON.stringify(DATA));
+  let status={};
+  DATA.windows.forEach((w,wi)=>w.groups.forEach((g,gi)=>g.accounts.forEach((a,ai)=>{if(a.status==="online")status[wi+"-"+gi+"-"+ai]="online";})));
+  localStorage.setItem("win-status-tiktok",JSON.stringify(status));
+  fetch("/data-api/",{method:"POST",body:JSON.stringify(DATA)}).catch(()=>{});
+}function render(){
+  document.getElementById("win-cards").innerHTML=DATA.windows.map((w,i)=>{
+    const cnt=countWin(i), online=countOnline(i);
+    return '<div class="win-card '+(curWin===i?'on':'')+'" onclick="selWin('+i+')"><h4>'+w.name+'</h4><p>'+w.desc+'</p><div class="count">'+cnt+' 个号 · 已登入 '+online+'</div></div>';
+  }).join("");
+  const win=DATA.windows[curWin];
+  document.getElementById("group-list").innerHTML=win.groups.map((g,i)=>{
+    const cnt=g.accounts.filter(a=>a.proxy).length;
+    const start=i*PER_GROUP+1, end=(i+1)*PER_GROUP;
+    return '<div class="group-item '+(curGroup===i?'on':'')+'" onclick="selGroup('+i+')"><div>第'+(i+1)+'组<div class="range">'+start+'-'+end+'</div></div><span>'+cnt+'/'+PER_GROUP+'</span></div>';
+  }).join("");
+  const grp=win.groups[curGroup];
+  document.getElementById("seats").innerHTML=grp.accounts.map((a,i)=>
+    '<div class="seat '+(a.proxy?'has':'')+'" onclick="scrollTo('+a.id+')">'+a.id+'</div>'
+  ).join("");
+  document.getElementById("group-title").textContent="第"+(curGroup+1)+"组 · 10 个号 · "+(curGroup*10+1)+"-"+(curGroup+1)*10;
+  let accs=grp.accounts;
+  if(filter==='online')accs=accs.filter(a=>a.status==='online');
+  else if(filter==='offline')accs=accs.filter(a=>a.status==='offline');
+  document.getElementById("acc-list").innerHTML=accs.map(a=>{
+    const parts=(a.proxy||"").split(":");
+    const ip=parts[0]||"无", port=parts[1]||"", user=parts[2]||"";
+    return '<div class="acc" id="acc-'+a.id+'"><div class="acc-h"><div class="acc-num">'+a.id+'</div><div class="acc-info"><h4>'+(a.email||'待填邮箱')+'</h4><p>窗口 / '+a.id+'</p></div><span class="acc-status">'+((a.status==='online'&&a.proxy)?'<b style="color:#10b981;cursor:pointer;" onclick="toggleStatus('+a.id+')">已登入</b>':'<span style="cursor:pointer;" onclick="toggleStatus('+a.id+')">未登入</span>')+'</span></div><div class="acc-proxy"><div><span>代理</span><span>HTTP · '+ip+(port?':'+port:'')+'</span></div><div><span>认证</span><span>'+(user||'尚末确认')+'</span></div><div><span>方式</span><span>尚末确认</span></div></div><button class="b" style="width:100%;margin-top:8px;" onclick="openWin('+a.id+')">打开窗口</button><button style="width:100%;margin-top:4px;background:#6b7280;color:#fff;" onclick="checkProxy('+a.id+')">检测代理</button></div>';
+  }).join("");
+  let sealed=[];
+  DATA.windows.forEach((w)=>w.groups.forEach((g)=>g.accounts.forEach(a=>{if(!a.proxy)sealed.push(a.id);})));
+  document.getElementById("sealed-list").textContent=sealed.length?"未封号 "+sealed.length+"："+sealed.slice(0,50).join("、")+(sealed.length>50?"...":""):"全部已分配";
+}
+function countWin(i){return DATA.windows[i].groups.reduce((s,g)=>s+g.accounts.filter(a=>a.proxy).length,0);}
+function countOnline(i){return DATA.windows[i].groups.reduce((s,g)=>s+g.accounts.filter(a=>a.status==='online').length,0);}
+function selWin(i){curWin=i;curGroup=0;render();}
+function selGroup(i){curGroup=i;render();}
+function setFilter(f){filter=f;document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('on'));event.target.classList.add('on');render();}
+function showUpload(){document.getElementById("upload-modal").classList.add("show");}
+function hideUpload(){document.getElementById("upload-modal").classList.remove("show");}
+function uploadIP(){
+  const text=document.getElementById("ip-input").value.trim();
+  if(!text)return;
+  const lines=text.split(/\r?\n/).map(s=>s.trim()).filter(Boolean);
+  let counts=[0,0,0];
+  let lineIdx=0;
+  // 轮流分配到3个窗口
+  while(lineIdx<lines.length){
+    for(let wi=0;wi<3 && lineIdx<lines.length;wi++){
+      const w=DATA.windows[wi];
+      let assigned=false;
+      for(let g of w.groups){
+        if(assigned)break;
+        for(let a of g.accounts){
+          if(!a.proxy){
+            a.proxy=lines[lineIdx++];
+            a.status="offline";
+            counts[wi]++;
+            assigned=true;
+            break;
+          }
+        }
+      }
+    }
+  }
+  save();render();hideUpload();
+  document.getElementById("ip-input").value="";
+  alert("已分配：窗口1 "+counts[0]+" 个，窗口2 "+counts[1]+" 个，窗口3 "+counts[2]+" 个");
+}
+function clearAll(){
+  if(!confirm("确定清空所有窗口的 IP？"))return;
+  DATA.windows.forEach(w=>w.groups.forEach(g=>g.accounts.forEach(a=>{a.proxy="";a.status="empty";})));
+  save();render();
+  alert("已清空");
+}
+
+function toggleStatus(id){
+  const a=DATA.windows[curWin].groups[curGroup].accounts.find(x=>x.id===id);
+  if(a){a.status=a.status==="online"?"offline":"online";save();render();}
+}
+function openWin(id){
+  const a=DATA.windows[curWin].groups[curGroup].accounts.find(x=>x.id===id);
+  if(!a||!a.proxy){alert("请先分配代理");return;}
+  const parts=a.proxy.split(":");
+  const host=parts[0], port=parts[1]||"80", user=parts[2]||"", pass=parts[3]||"";
+  const data=JSON.stringify({h:host,p:parseInt(port),u:user,w:pass,s:"http",id:"tiktok_"+curWin+"_"+id,url:"https://www.tiktok.com"});
+  const b64=btoa(data).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/g,"");
+  a.status="online";
+  save();render();
+  window.open("chuangye:"+b64,"_blank");
+}
+function checkProxy(id){alert("检测代理 "+id);}
+function downloadInstaller(){window.location.href="/opener.zip?t="+Date.now();}
+function scrollTo(id){document.getElementById("acc-"+id)?.scrollIntoView({behavior:"smooth"});}
+init();
+</script>
+</body>
+</html>

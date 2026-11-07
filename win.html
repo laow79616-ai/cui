@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>云窗账号管理</title>
+<style>
+*{box-sizing:border-box;}
+body{margin:0;font-family:system-ui,sans-serif;background:#f0f2f5;color:#1f2937;}
+.top{background:#fff;border-bottom:1px solid #e5e7eb;padding:10px 20px;display:flex;gap:16px;align-items:center;}
+.logo{display:flex;align-items:center;gap:8px;font-weight:700;}
+.logo-icon{width:32px;height:32px;background:linear-gradient(135deg,#3b82f6,#8b5cf6);border-radius:8px;}
+.top a,.top button{text-decoration:none;color:#374151;padding:8px 14px;border-radius:20px;font-size:14px;border:none;background:transparent;cursor:pointer;}
+.top .on{background:#2563eb;color:#fff;}
+.top .btn{background:#f3f4f6;}
+.top .btn-primary{background:#2563eb;color:#fff;}
+.wrap{max-width:1200px;margin:16px auto;padding:0 16px;}
+.report{background:#fff;border:1px solid #e5e7eb;border-radius:16px;padding:16px;margin-bottom:16px;}
+.report h3{margin:0 0 8px;font-size:14px;color:#6b7280;}
+.report .sealed{color:#059669;font-size:13px;line-height:1.6;}
+.report .unsealed{color:#d97706;font-size:13px;}
+.windows{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px;}
+.win-card{background:#fff;border:1px solid #e5e7eb;border-radius:16px;padding:16px;cursor:pointer;}
+.win-card.on{background:#2563eb;color:#fff;border-color:#2563eb;}
+.win-card h4{margin:0 0 4px;font-size:16px;}
+.win-card p{margin:0;font-size:13px;opacity:.8;}
+.win-card .count{font-size:12px;margin-top:8px;opacity:.7;}
+.main{display:flex;gap:16px;}
+.sidebar{width:180px;background:#fff;border:1px solid #e5e7eb;border-radius:16px;padding:8px;max-height:500px;overflow:auto;}
+.sidebar-h{font-size:12px;color:#6b7280;padding:8px;}
+.group-item{padding:10px 12px;margin:2px 0;border-radius:10px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-size:14px;}
+.group-item:hover{background:#f3f4f6;}
+.group-item.on{background:#2563eb;color:#fff;}
+.group-item .range{font-size:11px;opacity:.7;}
+.content{flex:1;}
+.content-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+.seats{display:flex;gap:8px;margin-bottom:12px;}
+.seat{width:36px;height:36px;border-radius:50%;border:2px solid #e5e7eb;display:flex;align-items:center;justify-content:center;font-size:13px;cursor:pointer;background:#fff;}
+.seat.on{background:#2563eb;color:#fff;border-color:#2563eb;}
+.seat.has{border-color:#2563eb;}
+.search-bar{display:flex;gap:8px;margin-bottom:12px;}
+.search-bar input{flex:1;padding:10px 14px;border:1px solid #e5e7eb;border-radius:20px;font-size:14px;}
+.filter-btn{padding:8px 16px;border:1px solid #e5e7eb;border-radius:20px;background:#fff;cursor:pointer;font-size:13px;}
+.filter-btn.on{background:#2563eb;color:#fff;border-color:#2563eb;}
+.accounts{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;}
+.acc{background:#fff;border:1px solid #e5e7eb;border-radius:16px;padding:16px;}
+.acc-h{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.acc-num{width:32px;height:32px;border-radius:50%;background:#2563eb;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;}
+.acc-info{flex:1;}
+.acc-info h4{margin:0;font-size:14px;}
+.acc-info p{margin:2px 0 0;font-size:12px;color:#6b7280;}
+.acc-status{font-size:12px;color:#6b7280;}
+.acc-proxy{background:#f9fafb;border-radius:8px;padding:8px;margin:8px 0;font-size:12px;}
+.acc-proxy div{display:flex;justify-content:space-between;margin:2px 0;}
+.upload-modal{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;}
+.upload-modal.show{display:flex;}
+.upload-box{background:#fff;border-radius:16px;padding:20px;width:400px;}
+.upload-box textarea{width:100%;height:120px;border:1px solid #e5e7eb;border-radius:8px;padding:10px;font-size:13px;margin:10px 0;}
+button{border:none;padding:8px 16px;border-radius:8px;cursor:pointer;font-weight:600;font-size:13px;}
+.b{background:#2563eb;color:#fff;}.g{background:#059669;color:#fff;}
+</style>
+</head>
+<body>
+<div class="top">
+  <div class="logo"><div class="logo-icon"></div>云窗账号管理</div>
+  
+  <a href="/tiktok">TikTok</a>
+  <a href="/threads">Threads</a>
+  <a href="/instagram">Instagram</a>
+  <a href="/facebook">Facebook</a>
+  <button class="btn" onclick="showUpload()">批量添加 IP</button>
+  <button class="btn-primary">+ 新建窗口</button>
+</div>
+<div class="wrap">
+  <div class="report">
+    <h3>查询上报</h3>
+    <div class="sealed" id="sealed-list">未封号：加载中...</div>
+    <div class="unsealed">已封号 0</div>
+    <div style="color:#9ca3af;font-size:12px;margin-top:4px;">已登出 0，查询到会显示在这里</div>
+  </div>
+  <div class="windows" id="win-cards"></div>
+  <div class="main">
+    <div class="sidebar">
+      <div class="sidebar-h">新空号 1-200</div>
+      <div id="group-list"></div>
+    </div>
+    <div class="content">
+      <div class="content-h">
+        <span id="group-title">第1组 · 10 个号</span>
+        <span style="font-size:12px;color:#6b7280;">删号留空，不往前移</span>
+      </div>
+      <div class="seats" id="seats"></div>
+      <div class="search-bar">
+        <input placeholder="搜索窗口、邮箱或代理" id="search">
+        <button class="filter-btn on" onclick="setFilter('all')">全部</button>
+        <button class="filter-btn" onclick="setFilter('online')">已登入</button>
+        <button class="filter-btn" onclick="setFilter('offline')">未登入</button>
+      </div>
+      <div class="accounts" id="acc-list"></div>
+    </div>
+  </div>
+</div>
+<div class="upload-modal" id="upload-modal">
+  <div class="upload-box">
+    <h3 style="margin:0;">批量添加 IP</h3>
+    <p style="font-size:12px;color:#6b7280;">格式：host:port:user:pass，一行一个</p>
+    <textarea id="ip-input" placeholder="63.164.220.154:35339:user:pass"></textarea>
+    <div style="display:flex;gap:8px;justify-content:flex-end;">
+      <button onclick="hideUpload()">取消</button>
+      <button class="b" onclick="uploadIP()">上传并分配</button>
+    </div>
+  </div>
+</div>
+<script>
+const WINDOWS=3, GROUPS=20, PER_GROUP=10;
+let DATA={windows:[]}, curWin=0, curGroup=0, filter='all';
+function init(){
+  for(let w=0;w<WINDOWS;w++){
+    DATA.windows.push({id:w,name:(w+1)+"窗口",desc:w===0?"管理原来的号 1-200":"管理新空号 1-200",groups:[]});
+    for(let g=0;g<GROUPS;g++){
+      DATA.windows[w].groups.push({id:g,accounts:[]});
+      for(let a=0;a<PER_GROUP;a++){
+        DATA.windows[w].groups[g].accounts.push({id:g*PER_GROUP+a+1,email:"",proxy:"",status:"empty",auth:""});
+      }
+    }
+  }
+  load();render();
+}
+function load(){try{const s=localStorage.getItem("win-data-v2");if(s){const d=JSON.parse(s);if(d.windows)DATA=d;}}catch(e){}}
+function save(){localStorage.setItem("win-data-v2",JSON.stringify(DATA));}
+function render(){
+  // 窗口卡片
+  document.getElementById("win-cards").innerHTML=DATA.windows.map((w,i)=>{
+    const cnt=countWin(i), online=countOnline(i);
+    return '<div class="win-card '+(curWin===i?'on':'')+'" onclick="selWin('+i+')"><h4>'+w.name+'</h4><p>'+w.desc+'</p><div class="count">'+cnt+' 个号 · 已登入 '+online+'</div></div>';
+  }).join("");
+  // 分组
+  const win=DATA.windows[curWin];
+  document.getElementById("group-list").innerHTML=win.groups.map((g,i)=>{
+    const cnt=g.accounts.filter(a=>a.proxy).length;
+    const start=i*PER_GROUP+1, end=(i+1)*PER_GROUP;
+    return '<div class="group-item '+(curGroup===i?'on':'')+'" onclick="selGroup('+i+')"><div>第'+(i+1)+'组<div class="range">'+start+'-'+end+'</div></div><span>'+cnt+'/'+PER_GROUP+'</span></div>';
+  }).join("");
+  // 座位圆圈
+  const grp=win.groups[curGroup];
+  document.getElementById("seats").innerHTML=grp.accounts.map((a,i)=>
+    '<div class="seat '+(a.proxy?'has':'')+'" onclick="scrollTo('+a.id+')">'+a.id+'</div>'
+  ).join("");
+  document.getElementById("group-title").textContent="第"+(curGroup+1)+"组 · 10 个号 · "+(curGroup*10+1)+"-"+(curGroup+1)*10;
+  // 账号卡片
+  let accs=grp.accounts;
+  if(filter==='online')accs=accs.filter(a=>a.status==='online');
+  else if(filter==='offline')accs=accs.filter(a=>a.status==='offline');
+  document.getElementById("acc-list").innerHTML=accs.map(a=>
+    '<div class="acc" id="acc-'+a.id+'"><div class="acc-h"><div class="acc-num">'+a.id+'</div><div class="acc-info"><h4>'+(a.email||'待填邮箱')+'</h4><p>窗口 / '+a.id+'</p></div><span class="acc-status">'+(a.status==='online'?'已登入':'未登入')+'</span></div><div class="acc-proxy"><div><span>代理</span><span>HTTP · '+(a.proxy||'无')+'</span></div><div><span>认证</span><span>'+(a.auth||'尚末确认')+'</span></div></div></div>'
+  ).join("");
+  // 上报
+  let sealed=[];
+  DATA.windows.forEach((w,wi)=>w.groups.forEach((g,gi)=>g.accounts.forEach(a=>{if(!a.proxy)sealed.push(a.id);})));
+  document.getElementById("sealed-list").textContent=sealed.length?"未封号 "+sealed.length+"："+sealed.slice(0,50).join("、")+(sealed.length>50?"...":""):"全部已分配";
+}
+function countWin(i){return DATA.windows[i].groups.reduce((s,g)=>s+g.accounts.filter(a=>a.proxy).length,0);}
+function countOnline(i){return DATA.windows[i].groups.reduce((s,g)=>s+g.accounts.filter(a=>a.status==='online').length,0);}
+function selWin(i){curWin=i;curGroup=0;render();}
+function selGroup(i){curGroup=i;render();}
+function setFilter(f){filter=f;document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('on'));event.target.classList.add('on');render();}
+function showUpload(){document.getElementById("upload-modal").classList.add("show");}
+function hideUpload(){document.getElementById("upload-modal").classList.remove("show");}
+function uploadIP(){
+  const text=document.getElementById("ip-input").value.trim();
+  if(!text)return;
+  const lines=text.split("\n").map(s=>s.trim()).filter(Boolean);
+  const win=DATA.windows[curWin];
+  let idx=0;
+  for(let g of win.groups){for(let a of g.accounts){if(!a.proxy&&idx<lines.length){a.proxy=lines[idx++];a.status="offline";}}}
+  save();render();hideUpload();
+  document.getElementById("ip-input").value="";
+  alert("已分配 "+idx+" 个 IP");
+}
+function scrollTo(id){document.getElementById("acc-"+id)?.scrollIntoView({behavior:"smooth"});}
+init();
+</script>
+</body>
+</html>
