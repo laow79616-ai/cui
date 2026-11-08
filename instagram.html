@@ -138,21 +138,17 @@ function init(){
   load().then(render);
 }
 async function load(){
-  let local=null;
-  try{local=JSON.parse(localStorage.getItem("win-data-shared"));}catch(e){}
   try{
-    const r=await fetch("/data-api/");
+    const r=await fetch("/data-api/?t="+Date.now());
     const d=await r.json();
     if(d.windows&&d.windows[0]&&d.windows[0].groups){
       DATA=d;
-    }else if(local&&local.windows){
-      DATA=local;
-      fetch("/data-api/",{method:"POST",body:JSON.stringify(DATA)}).catch(()=>{});
+      localStorage.setItem("win-data-shared",JSON.stringify(DATA));
     }
   }catch(e){
-    if(local&&local.windows)DATA=local;
+    let s=localStorage.getItem("win-data-shared");
+    if(s){const d=JSON.parse(s);if(d.windows)DATA=d;}
   }
-  if(DATA.windows)DATA.windows.forEach(w=>w.groups.forEach(g=>g.accounts.forEach(a=>a.status="offline")));
 }
 function save(){
   localStorage.setItem("win-data-shared",JSON.stringify(DATA));
