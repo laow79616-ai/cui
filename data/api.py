@@ -1,37 +1,47 @@
-#!/usr/bin/env python3
-import json, os
 from http.server import HTTPServer, BaseHTTPRequestHandler
+import json, os
 
-DATA_FILE = "/var/www/html/data/windows.json"
+DATA_DIR = "/var/www/html/data"
 
 class Handler(BaseHTTPRequestHandler):
+    def get_file(self):
+        path = self.path.split("?")[0].strip("/")
+        if path == "" or path == "data-api":
+            return os.path.join(DATA_DIR, "windows.json")
+        elif "tiktok" in path:
+            return os.path.join(DATA_DIR, "tiktok.json")
+        elif "facebook" in path:
+            return os.path.join(DATA_DIR, "facebook.json")
+        return os.path.join(DATA_DIR, "windows.json")
+    
     def do_GET(self):
-        self.send_response(200)
-        self.send_header("Content-Type", "application/json")
-        self.send_header("Access-Control-Allow-Origin", "*")
-        self.end_headers()
-        if os.path.exists(DATA_FILE):
-            with open(DATA_FILE) as f:
-                self.wfile.write(f.read().encode())
-        else:
-            self.wfile.write(b"{}")
+        try:
+            f = self.get_file()
+            with open(f) as file:
+                data = file.read()
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.send_header("Access-Control-Allow-Origin", "*")
+            self.end_headers()
+            self.wfile.write(data.encode())
+        except Exception as e:
+            self.send_response(500)
+            self.end_headers()
+            self.wfile.write(str(e).encode())
     
     def do_POST(self):
-        length = int(self.headers.get("Content-Length", 0))
-        data = self.rfile.read(length)
-        with open(DATA_FILE, "wb") as f:
-            f.write(data)
-        self.send_response(200)
-        self.send_header("Access-Control-Allow-Origin", "*")
-        self.end_headers()
-        self.wfile.write(b"ok")
-    
-    def do_OPTIONS(self):
-        self.send_response(200)
-        self.send_header("Access-Control-Allow-Origin", "*")
-        self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
-        self.send_header("Access-Control-Allow-Headers", "Content-Type")
-        self.end_headers()
+        try:
+            f = self.get_file()
+            length = int(self.headers.get("Content-Length", 0))
+            body = self.rfile.read(length)
+            with open(f, "w") as file:
+                file.write(body.decode())
+            self.send_response(200)
+            self.send_header("Access-Control-Allow-Origin", "*")
+            self.end_headers()
+            self.wfile.write(b'{"ok":true}')
+        except Exception as e:
+            self.send_response(500)
+            self.end_headers()
 
-if __name__ == "__main__":
-    HTTPServer(("127.0.0.1", 8089), Handler).serve_forever()
+HTTPServer(("0.0.0.0", 8089), Handler).serve_forever()

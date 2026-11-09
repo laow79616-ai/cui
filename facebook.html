@@ -139,23 +139,23 @@ function init(){
 }
 async function load(){
   try{
-    const r=await fetch("/data-api/?t="+Date.now());
+    const r=await fetch("/data-api/facebook/?t="+Date.now());
     const d=await r.json();
     if(d.windows&&d.windows[0]&&d.windows[0].groups){
       DATA=d;
-      localStorage.setItem("win-data-shared",JSON.stringify(DATA));
+      localStorage.setItem("win-data-facebook",JSON.stringify(DATA));
     }
   }catch(e){
-    let s=localStorage.getItem("win-data-shared");
+    let s=localStorage.getItem("win-data-facebook");
     if(s){const d=JSON.parse(s);if(d.windows)DATA=d;}
   }
 }
 function save(){
-  localStorage.setItem("win-data-shared",JSON.stringify(DATA));
+  localStorage.setItem("win-data-facebook",JSON.stringify(DATA));
   let status={};
   DATA.windows.forEach((w,wi)=>w.groups.forEach((g,gi)=>g.accounts.forEach((a,ai)=>{if(a.status==="online")status[wi+"-"+gi+"-"+ai]="online";})));
   localStorage.setItem("win-status-facebook",JSON.stringify(status));
-  fetch("/data-api/",{method:"POST",body:JSON.stringify(DATA)}).catch(()=>{});
+  fetch("/data-api/facebook/",{method:"POST",body:JSON.stringify(DATA)}).catch(()=>{});
 }function render(){
   document.getElementById("win-cards").innerHTML=DATA.windows.map((w,i)=>{
     const cnt=countWin(i), online=countOnline(i);
