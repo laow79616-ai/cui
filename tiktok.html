@@ -232,7 +232,9 @@ function toggleStatus(id){
   if(a){a.status=a.status==="online"?"offline":"online";save();render();}
 }
 function updateField(id,field,val){
-  if(field==='email'&&val){
+  val=val.trim();
+  if(!val)return;
+  if(field==='email'){
     let dup=false;
     DATA.windows.forEach(w=>w.groups.forEach(g=>g.accounts.forEach(a=>{if(a.email===val&&a.id!==id)dup=true;})));
     if(dup){alert('邮箱已存在，请勿重复添加');return;}
