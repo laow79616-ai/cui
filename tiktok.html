@@ -231,7 +231,15 @@ function toggleStatus(id){
   const a=DATA.windows[curWin].groups[curGroup].accounts.find(x=>x.id===id);
   if(a){a.status=a.status==="online"?"offline":"online";save();render();}
 }
-function updateField(id,field,val){const a=DATA.windows[curWin].groups[curGroup].accounts.find(x=>x.id===id);if(a){a[field]=val;save();}}
+function updateField(id,field,val){
+  if(field==='email'&&val){
+    let dup=false;
+    DATA.windows.forEach(w=>w.groups.forEach(g=>g.accounts.forEach(a=>{if(a.email===val&&a.id!==id)dup=true;})));
+    if(dup){alert('邮箱已存在，请勿重复添加');return;}
+  }
+  const a=DATA.windows[curWin].groups[curGroup].accounts.find(x=>x.id===id);
+  if(a){a[field]=val;save();}
+}
 function openWin(id){
   const a=DATA.windows[curWin].groups[curGroup].accounts.find(x=>x.id===id);
   if(!a||!a.proxy){alert("请先分配代理");return;}
