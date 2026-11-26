@@ -1,5 +1,5 @@
 === System Info ===
-Thu Nov 26 23:30:01 CST 2026
+Thu Nov 26 23:40:01 CST 2026
 Linux laowang-mdds-01.evoxt.com 7.0.0-14-generic #14-Ubuntu SMP PREEMPT_DYNAMIC Mon Apr 13 11:09:53 UTC 2026 x86_64 GNU/Linux
 Filesystem      Size  Used Avail Use% Mounted on
 tmpfs           782M  660K  781M   1% /run
@@ -11,7 +11,7 @@ none            1.0M     0  1.0M   0% /run/credentials/systemd-networkd.service
 none            1.0M     0  1.0M   0% /run/credentials/getty@tty1.service
 tmpfs           391M  8.0K  391M   1% /run/user/0
                total        used        free      shared  buff/cache   available
-Mem:           3.8Gi       567Mi       626Mi       1.8Mi       2.9Gi       3.3Gi
+Mem:           3.8Gi       556Mi       307Mi       1.8Mi       3.2Gi       3.3Gi
 Swap:             0B          0B          0B
 
 === Running services ===
@@ -40,7 +40,7 @@ Legend: LOAD   → Reflects whether the unit definition was properly loaded.
 Netid State  Recv-Q Send-Q Local Address:Port Peer Address:PortProcess                                                                                                                                          
 udp   UNCONN 0      0          127.0.0.1:323       0.0.0.0:*    users:(("chronyd",pid=1138,fd=4))                                                                                                               
 udp   UNCONN 0      0              [::1]:323          [::]:*    users:(("chronyd",pid=1138,fd=5))                                                                                                               
-tcp   LISTEN 0      511        127.0.0.1:3100      0.0.0.0:*    users:(("node",pid=2514333,fd=21))                                                                                                              
+tcp   LISTEN 0      511        127.0.0.1:3100      0.0.0.0:*    users:(("node",pid=2514976,fd=21))                                                                                                              
 tcp   LISTEN 0      5          127.0.0.1:8088      0.0.0.0:*    users:(("python3",pid=1994856,fd=3))                                                                                                            
 tcp   LISTEN 0      5            0.0.0.0:8089      0.0.0.0:*    users:(("python3",pid=2136297,fd=3))                                                                                                            
 tcp   LISTEN 0      511          0.0.0.0:8443      0.0.0.0:*    users:(("nginx",pid=2514210,fd=14),("nginx",pid=2514209,fd=14),("nginx",pid=2514208,fd=14),("nginx",pid=2514207,fd=14),("nginx",pid=1247,fd=14))
