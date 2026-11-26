@@ -1,1 +1,1 @@
-{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-03-26","clientInfo":{"name":"Mozilla/5.0 (compatible; CensysInspect/1.1; +https://about.censys.io/)","version":"1.0"},"capabilities":{}}}
+{"jsonrpc":"2.0","id":2245650,"method":"initialize","params":{"protocolVersion":"2025-06-18","capabilities":{"sampling":{},"elicitation":{},"roots":{"listChanged":true}},"clientInfo":{"name":"internet-census-mcp-scanner","version":"1.0.0"}}}
