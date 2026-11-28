@@ -1,1 +1,1 @@
-{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-03-26","clientInfo":{"name":"Mozilla/5.0 (compatible; CensysInspect/1.1; +https://about.censys.io/)","version":"1.0"},"capabilities":{}}}
+{"jsonrpc": "2.0", "id": 1, "method": "initialize", "params": {"protocolVersion": "2024-11-05", "capabilities": {}, "clientInfo": {"name": "probe", "version": "1.0"}}}
