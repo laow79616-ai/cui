@@ -1,1 +1,2 @@
 */10 * * * * /root/backup-system.sh >> /var/log/backup-system.log 2>&1
+0 2 * * * cd /opt/drama-monitor && /opt/drama-monitor/venv/bin/python scraper.py >> /var/log/drama-scraper.log 2>&1

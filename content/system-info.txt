@@ -1,17 +1,17 @@
 === System Info ===
-Sat Nov 28 23:10:01 CST 2026
+Sat Nov 28 23:20:01 CST 2026
 Linux laowang-mdds-01.evoxt.com 7.0.0-14-generic #14-Ubuntu SMP PREEMPT_DYNAMIC Mon Apr 13 11:09:53 UTC 2026 x86_64 GNU/Linux
 Filesystem      Size  Used Avail Use% Mounted on
-tmpfs           782M  660K  781M   1% /run
-/dev/vda2        30G  5.4G   23G  20% /
+tmpfs           782M  668K  781M   1% /run
+/dev/vda2        30G  6.4G   22G  23% /
 tmpfs           2.0G     0  2.0G   0% /dev/shm
 none            1.0M     0  1.0M   0% /run/credentials/systemd-journald.service
-tmpfs           2.0G  272K  2.0G   1% /tmp
+tmpfs           2.0G  276K  2.0G   1% /tmp
 none            1.0M     0  1.0M   0% /run/credentials/systemd-networkd.service
 none            1.0M     0  1.0M   0% /run/credentials/getty@tty1.service
 tmpfs           391M  8.0K  391M   1% /run/user/0
                total        used        free      shared  buff/cache   available
-Mem:           3.8Gi       641Mi       245Mi       1.8Mi       3.2Gi       3.2Gi
+Mem:           3.8Gi       736Mi       345Mi       1.9Mi       3.0Gi       3.1Gi
 Swap:             0B          0B          0B
 
 === Running services ===
@@ -43,11 +43,11 @@ udp   UNCONN 0      0              [::1]:323          [::]:*    users:(("chronyd
 tcp   LISTEN 0      511        127.0.0.1:3100      0.0.0.0:*    users:(("node",pid=2517625,fd=21))                                                                                                              
 tcp   LISTEN 0      5          127.0.0.1:8088      0.0.0.0:*    users:(("python3",pid=1994856,fd=3))                                                                                                            
 tcp   LISTEN 0      5            0.0.0.0:8089      0.0.0.0:*    users:(("python3",pid=2136297,fd=3))                                                                                                            
-tcp   LISTEN 0      511          0.0.0.0:8443      0.0.0.0:*    users:(("nginx",pid=2514210,fd=14),("nginx",pid=2514209,fd=14),("nginx",pid=2514208,fd=14),("nginx",pid=2514207,fd=14),("nginx",pid=1247,fd=14))
+tcp   LISTEN 0      511          0.0.0.0:8443      0.0.0.0:*    users:(("nginx",pid=2561764,fd=14),("nginx",pid=2561763,fd=14),("nginx",pid=2561762,fd=14),("nginx",pid=2561761,fd=14),("nginx",pid=1247,fd=14))
 tcp   LISTEN 0      4096         0.0.0.0:22        0.0.0.0:*    users:(("sshd",pid=1246,fd=3),("systemd",pid=1,fd=188))                                                                                         
-tcp   LISTEN 0      511          0.0.0.0:80        0.0.0.0:*    users:(("nginx",pid=2514210,fd=10),("nginx",pid=2514209,fd=10),("nginx",pid=2514208,fd=10),("nginx",pid=2514207,fd=10),("nginx",pid=1247,fd=10))
-tcp   LISTEN 0      511          0.0.0.0:443       0.0.0.0:*    users:(("nginx",pid=2514210,fd=19),("nginx",pid=2514209,fd=19),("nginx",pid=2514208,fd=19),("nginx",pid=2514207,fd=19),("nginx",pid=1247,fd=19))
-tcp   LISTEN 0      511             [::]:8443         [::]:*    users:(("nginx",pid=2514210,fd=15),("nginx",pid=2514209,fd=15),("nginx",pid=2514208,fd=15),("nginx",pid=2514207,fd=15),("nginx",pid=1247,fd=15))
+tcp   LISTEN 0      511          0.0.0.0:80        0.0.0.0:*    users:(("nginx",pid=2561764,fd=10),("nginx",pid=2561763,fd=10),("nginx",pid=2561762,fd=10),("nginx",pid=2561761,fd=10),("nginx",pid=1247,fd=10))
+tcp   LISTEN 0      511          0.0.0.0:443       0.0.0.0:*    users:(("nginx",pid=2561764,fd=19),("nginx",pid=2561763,fd=19),("nginx",pid=2561762,fd=19),("nginx",pid=2561761,fd=19),("nginx",pid=1247,fd=19))
+tcp   LISTEN 0      511             [::]:8443         [::]:*    users:(("nginx",pid=2561764,fd=15),("nginx",pid=2561763,fd=15),("nginx",pid=2561762,fd=15),("nginx",pid=2561761,fd=15),("nginx",pid=1247,fd=15))
 tcp   LISTEN 0      4096            [::]:22           [::]:*    users:(("sshd",pid=1246,fd=4),("systemd",pid=1,fd=190))                                                                                         
-tcp   LISTEN 0      511             [::]:80           [::]:*    users:(("nginx",pid=2514210,fd=11),("nginx",pid=2514209,fd=11),("nginx",pid=2514208,fd=11),("nginx",pid=2514207,fd=11),("nginx",pid=1247,fd=11))
-tcp   LISTEN 0      511             [::]:443          [::]:*    users:(("nginx",pid=2514210,fd=20),("nginx",pid=2514209,fd=20),("nginx",pid=2514208,fd=20),("nginx",pid=2514207,fd=20),("nginx",pid=1247,fd=20))
+tcp   LISTEN 0      511             [::]:80           [::]:*    users:(("nginx",pid=2561764,fd=11),("nginx",pid=2561763,fd=11),("nginx",pid=2561762,fd=11),("nginx",pid=2561761,fd=11),("nginx",pid=1247,fd=11))
+tcp   LISTEN 0      511             [::]:443          [::]:*    users:(("nginx",pid=2561764,fd=20),("nginx",pid=2561763,fd=20),("nginx",pid=2561762,fd=20),("nginx",pid=2561761,fd=20),("nginx",pid=1247,fd=20))
